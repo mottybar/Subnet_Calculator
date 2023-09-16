@@ -61,16 +61,20 @@ def convert_cidr_to_decimal(cidr):
     :rtype: string
     """
     # todo: check if need validation
-    cidr_to_decimal_mapping = {1: "128.0.0.0", 2: "192.0.0.0", 3: "224.0.0.0", 4: "240.0.0.0", 5: "248.0.0.0",
-                               6: "252.0.0.0", 7: "254.0.0.0", 8: "255.0.0.0", 9: "255.128.0.0", 10: "255.192.0.0",
-                               11: "255.224.0.0", 12: "255.240.0.0", 13: "255.248.0.0", 14: "255.252.0.0",
-                               15: "255.254.0.0", 16: "255.255.0.0", 17: "255.255.128.0", 18: "255.255.192.0",
-                               19: "255.255.224.0", 20: "255.255.240.0", 21: "255.255.248.0", 22: "255.255.252.0",
-                               23: "255.255.254.0", 24: "255.255.255.0", 25: "255.255.255.128", 26: "255.255.255.192",
-                               27: "255.255.255.224", 28: "255.255.255.240", 29: "255.255.255.248",
-                               30: "255.255.255.252", 31: "255.255.255.254", 32: "255.255.255.255"}
-    decimal_cidr = cidr_to_decimal_mapping.get(cidr, "invalid key")
-    return decimal_cidr
+    #convert cidr to binary mask
+    binary = ""
+    for i in range(cidr):
+        binary += str(1)
+    for i in range(32-cidr):
+        binary += str(0)
+    # Split the binary mask into four octets
+    decimal = []
+    for i in range(0, len(binary), 8):
+        # Convert each octet from binary to decimal
+        decimal.append(str(int(binary[i:i+8], 2)))
+    # Join the decimal octets with dots to create the dotted-decimal notation
+    decimal = ".".join(decimal)
+    return decimal
 
 
 def calculate_number_of_hosts(cidr, number_of_subnets):
@@ -116,7 +120,7 @@ def calculate_number_of_subnets(cidr, number_of_hosts):
 
     # 2. calculate the number of subnets
     subnets = 2 ** (32 - cidr - bits_for_hosts)
-    hosts = 2 ** bits_for_hosts
+    hosts = 2 ** bits_for_hosts - 2
     return subnets, hosts
 
 
@@ -136,19 +140,36 @@ def network_address(ip, cidr):
     size = 2**((32-cidr) % 8)
     octet = octet_number(cidr)
     ip_octets = ip.split('.')
+    #put zero on every octet to the right of the current octet
+    for i in range(octet+1, 4):
+        ip_octets[i] = str(0)
     ip_octets[octet] = str(0)
-    print("first network:", ip_octets)
+    print("first network:", ".".join(ip_octets))
     ip_octets[octet] = str(size)
-    print("second network", ip_octets)
-    ip_octets[octet] = str(256 - size)
-    print("last network", ip_octets)
+    print("second network:", ".".join(ip_octets))
     ip_octets[octet] = str(256 - (size * 2))
-    print("one before last network", ip_octets)
+    print("one before last network:", ".".join(ip_octets))
+    ip_octets[octet] = str(256 - size)
+    print("last network:", ".".join(ip_octets))
 
 
 
-def broadcast_address(cidr):
-    pass
+
+def broadcast_address(ip, cidr):
+    size = 2 ** ((32 - cidr) % 8)
+    octet = octet_number(cidr)
+    ip_octets = ip.split('.')
+    # put 255 on every octet to the right of the current octet
+    for i in range(octet + 1, 4):
+        ip_octets[i] = str(255)
+    ip_octets[octet] = str(size - 1)
+    print("first broadcast:", ".".join(ip_octets))
+    ip_octets[octet] = str((size * 2) - 1)
+    print("second broadcast:", ".".join(ip_octets))
+    ip_octets[octet] = str(255 - size)
+    print("one before last broadcast:", ".".join(ip_octets))
+    ip_octets[octet] = str(255)
+    print("last broadcast:", ".".join(ip_octets))
 
 
 def main():
@@ -169,7 +190,7 @@ def main():
     # 3. Number of hosts
     if hosts_or_subnets == "subnets":
         num_of_subnets = number_of_hosts_or_subnets
-        num_of_hosts = calculate_number_of_hosts(cidr, num_of_subnets)
+        num_of_hosts, num_of_subnets = calculate_number_of_hosts(cidr, num_of_subnets)
 
     # 4. Number of subnets
     else:
@@ -180,11 +201,13 @@ def main():
     print("number of subnets:", num_of_subnets)
     # 5. For (maximum) two first and two last subnets
     # a. Network address
+    #network_address(ip_address, cidr)
     # b. Broadcast address
+    #broadcast_address(ip_address, cidr)
 
 
 if __name__ == "__main__":
-    # main()
+    main()
     # IP_Address = valid_IP_Address()
     # print(IP_Address)
     # cidr = valid_CIDR()
@@ -197,4 +220,6 @@ if __name__ == "__main__":
     # print(result)
     # result = calculate_number_of_subnets(24, 2000)
     # print(result)
-    network_address("172.12.12.12", 27)
+    # network_address("172.12.12.12", 22)
+    # broadcast_address("172.12.12.12", 22)
+    #convert_cidr_to_decimal()
