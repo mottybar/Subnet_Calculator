@@ -22,13 +22,13 @@ def valid_ip_address():
     :rtype: string
     """
     ip_address = input("enter an IP address: ")
-    while not re.fullmatch(r"(22[0-3]|2[0-2][0-3]|[0-1]?[0-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])){3}",
+    while not re.fullmatch(r"(22[0-3]|2[0-1][0-9]|[0-1]?[0-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])){3}",
                            ip_address):
         ip_address = input("IP address is not valid, please enter again: ")
     return ip_address
 
     # regex for all valid ip addresses 0.0.0.0 - 255.255.255.255: ((25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])
-    # regex for classes a,b,c ip addresses 0.0.0.0 - 223.255.255.255: (22[0-3]|2[0-2][0-3]|[0-1]?[0-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])){3}
+    # regex for classes a,b,c ip addresses 0.0.0.0 - 223.255.255.255: (22[0-3]|2[0-1][0-9]|[0-1]?[0-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])){3}
 
 def valid_cidr(ip):
     """
