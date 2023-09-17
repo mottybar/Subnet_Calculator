@@ -4,11 +4,11 @@ import re
 def class_to_cidr(ip):
     ip_octet = ip.split('.')
     first_octet = int(ip_octet[0])
-    if 0 <= first_octet <= 127:
+    if 0 <= first_octet <= 127:  # class A
         class_cidr = 8
-    elif 128 <= first_octet <= 191:
+    elif 128 <= first_octet <= 191:  # class B
         class_cidr = 16
-    elif 192 <= first_octet <= 255:
+    elif 192 <= first_octet <= 223:  # class C
         class_cidr = 24
     else:
         return "invalid first octet"
@@ -22,12 +22,13 @@ def valid_ip_address():
     :rtype: string
     """
     ip_address = input("enter an IP address: ")
-    while not re.fullmatch(r"((25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])",
+    while not re.fullmatch(r"(22[0-3]|2[0-2][0-3]|[0-1]?[0-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])){3}",
                            ip_address):
         ip_address = input("IP address is not valid, please enter again: ")
     return ip_address
-    # regex: ((25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])
 
+    # regex for all valid ip addresses 0.0.0.0 - 255.255.255.255: ((25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.){3}(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])
+    # regex for classes a,b,c ip addresses 0.0.0.0 - 223.255.255.255: (22[0-3]|2[0-2][0-3]|[0-1]?[0-9]?[0-9])(\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])){3}
 
 def valid_cidr(ip):
     """
