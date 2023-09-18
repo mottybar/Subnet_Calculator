@@ -100,8 +100,6 @@ def convert_cidr_to_decimal(cidr):
 def calculate_number_of_hosts(cidr, number_of_subnets):
     """
     calculate the number of hosts
-    number_of_hosts=2**(32-CIDR)
-    number_of_host > user hosts
     :return: hosts, subnets
     :rtype: int, int
     """
@@ -124,7 +122,6 @@ def calculate_number_of_hosts(cidr, number_of_subnets):
 def calculate_number_of_subnets(cidr, number_of_hosts):
     """
     calculate the number of subnets
-    32-cidr-hosts=subnets
     :return:subnets, hosts
     :rtype: int, int
     """
