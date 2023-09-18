@@ -72,7 +72,6 @@ def valid_number_of_hosts_or_subnets(cidr):
     number = input("please enter the number of hosts or subnets: ")
     while not number.isdigit() or int(number) > number_of_hosts_or_subnets:
         number = input("invalid number of hosts or subnets: ")
-
     return int(number)
 
 
@@ -103,8 +102,8 @@ def calculate_number_of_hosts(cidr, number_of_subnets):
     calculate the number of hosts
     number_of_hosts=2**(32-CIDR)
     number_of_host > user hosts
-    :return: int
-    :rtype:
+    :return: hosts, subnets
+    :rtype: int, int
     """
     # 1. from number_of_subnets infer how many bits we need for the subnets
     bits_for_subnets = 0
@@ -116,7 +115,7 @@ def calculate_number_of_hosts(cidr, number_of_subnets):
             subnet_num_found = True
         num_of_bits += 1
 
-    # 2. calculate the number of hosts
+    # 2. calculate the number of hosts and subnets
     hosts = 2 ** (32 - cidr - bits_for_subnets) - 2
     subnets = 2 ** bits_for_subnets
     return hosts, subnets
@@ -126,8 +125,8 @@ def calculate_number_of_subnets(cidr, number_of_hosts):
     """
     calculate the number of subnets
     32-cidr-hosts=subnets
-    :return:
-    :rtype:
+    :return:subnets, hosts
+    :rtype: int, int
     """
     # 1. from number_of_hosts infer how many bits we need for the hosts
     bits_for_hosts = 0
@@ -139,7 +138,7 @@ def calculate_number_of_subnets(cidr, number_of_hosts):
             host_num_found = True
         num_of_bits += 1
 
-    # 2. calculate the number of subnets
+    # 2. calculate the number of subnets and hosts
     subnets = 2 ** (32 - cidr - bits_for_hosts)
     hosts = 2 ** bits_for_hosts - 2
     return subnets, hosts
@@ -205,7 +204,7 @@ def main():
     # 1. Subnet mask (in mask decimal format)
     decimal_cidr = convert_cidr_to_decimal(cidr)
 
-    print("decimal cidr is:", decimal_cidr)
+    print("subnet mask :", decimal_cidr)
     # 2. Subnet in cidr
     print("cidr is", cidr)
 
